@@ -15,6 +15,9 @@ class Renderer:
             'damage': arcade.color.RED,
             'shield': arcade.color.BLUE
         }
+        self.default_texture = arcade.load_texture("resources/enemy_stay.png")
+        self.local_texture = arcade.load_texture("resources/player_stay.png")
+        self.player_list = arcade.SpriteList()
         
     def draw_background(self):
         """Dibuja el fondo del juego (espacio)"""
@@ -129,14 +132,68 @@ class Renderer:
             ], arcade.color.WHITE, 2)
     
     def draw_players(self, players, local_player_id):
-        """
-        Dibuja los jugadores en el mapa
-        
-        Args:
-            players: Diccionario de jugadores {player_id: {x, y, rotation, health, ...}}
-            local_player_id: ID del jugador local para resaltarlo
-        """
-        pass
+        """Dibuja los jugadores en el mapa"""
+
+        # Limpia la lista para este frame
+        self.player_list.clear()
+
+        for pid, pdata in players.items():
+            x = pdata.get("x", 0)
+            y = pdata.get("y", 0)
+            rot = pdata.get("rotation", 0)
+            health = pdata.get("health", 100)
+
+            # Seleccionar textura
+            texture = self.local_texture if pid == local_player_id else self.default_texture
+
+            # Crear sprite del jugador
+            sprite = arcade.Sprite()
+            sprite.texture = texture
+            sprite.center_x = x
+            sprite.center_y = y
+            sprite.angle = rot
+            sprite.scale = 1
+
+            # Agregar a la lista
+            self.player_list.append(sprite)
+
+            # === BARRA DE VIDA ===
+            bar_width = 4
+            bar_height = 30
+            bar_offset = 40
+
+            left = x - (bar_height / 2)
+            right = x + (bar_height / 2)
+
+            # Extremos verticales → altura pequeña
+            bottom = y + bar_offset - (bar_width / 2)
+            top = y + bar_offset + (bar_width / 2)
+
+
+            arcade.draw_lrbt_rectangle_filled(
+                left-1,
+                right+1,
+                bottom-1,
+                top+1,
+                arcade.color.WHITE
+            )
+            arcade.draw_lrbt_rectangle_filled(
+                left,
+                right,
+                bottom,
+                top,
+                arcade.color.GREEN
+            )
+            arcade.draw_lrbt_rectangle_filled(
+                left,
+                right-(right-left)*(health/100),
+                bottom,
+                top,
+                arcade.color.RED
+            )
+
+        # Finalmente dibujar todos los sprites DE UNA VEZ
+        self.player_list.draw()
     
     def draw_bullets(self, bullets):
         """

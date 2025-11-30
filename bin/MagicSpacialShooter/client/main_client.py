@@ -68,6 +68,12 @@ class GameWindow(arcade.Window):
         
         # UI
         self.renderer.draw_ui(game_state, self.player_id)
+
+        players = {
+            "ab12cd34": {"x": 350, "y": 350, "rotation": 0, "health": 70},
+            "fe56ab78": {"x": 300, "y": 380, "rotation": 0, "health": 100},
+        }
+        self.renderer.draw_players(players, "ab12cd34")
     
     def on_update(self, delta_time):
         """
@@ -89,6 +95,7 @@ class GameWindow(arcade.Window):
             self.net_thread.stop()
             self.net_thread.join()
         print("Cliente cerrado")
+        self.close()
 
 def main():
     """Punto de entrada del cliente"""
