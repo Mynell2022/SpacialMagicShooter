@@ -58,7 +58,7 @@ class GameWindow(arcade.Window):
         
         # === RENDERIZADO DEL MAPA Y OBJETOS ===
         self.renderer.draw_background()
-        self.renderer.draw_map_borders()
+        #self.renderer.draw_map_borders()
         
         # === Power-ups ===
         self.renderer.draw_powerups(game_state.get('powerups', []))

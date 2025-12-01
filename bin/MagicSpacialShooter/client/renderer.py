@@ -17,12 +17,25 @@ class Renderer:
         }
         self.default_texture = arcade.load_texture("resources/enemy_stay.png")
         self.local_texture = arcade.load_texture("resources/player_stay.png")
+        self.screen_texture = arcade.load_texture("resources/SpacialMagicScreen.png")
         self.player_list = arcade.SpriteList()
         
     def draw_background(self):
         """Dibuja el fondo del juego (espacio)"""
         arcade.set_background_color(BACKGROUND_COLOR)
-        
+
+        sprite = arcade.Sprite()
+        sprite.texture = self.screen_texture
+        sprite.center_x = 640
+        sprite.center_y = 360
+        sprite.angle = 0
+        sprite.scale = 1
+
+        # Agregar a la lista
+        temp = arcade.SpriteList()
+        temp.append(sprite)
+        temp.draw()
+        """
         # Dibujar áreas de UI (opciones y stats)
         # Área izquierda (opciones)
         arcade.draw_lrbt_rectangle_filled(
@@ -40,7 +53,8 @@ class Renderer:
         arcade.draw_lrbt_rectangle_filled(
             MAP_X_OFFSET, MAP_X_OFFSET + MAP_WIDTH, 0, MAP_Y_OFFSET,
             UI_BACKGROUND_COLOR
-        )
+        )]
+
         arcade.draw_lrbt_rectangle_filled(
             MAP_X_OFFSET, MAP_X_OFFSET + MAP_WIDTH, 
             MAP_Y_OFFSET + MAP_HEIGHT, SCREEN_HEIGHT,
@@ -55,7 +69,7 @@ class Renderer:
             y = MAP_Y_OFFSET + random.randint(0, MAP_HEIGHT)
             size = random.randint(1, 2)
             brightness = random.randint(150, 255)
-            arcade.draw_circle_filled(x, y, size, (brightness, brightness, brightness))
+            arcade.draw_circle_filled(x, y, size, (brightness, brightness, brightness))"""
     
     def draw_map_borders(self):
         """Dibuja los bordes del mapa"""
@@ -171,11 +185,11 @@ class Renderer:
 
 
             arcade.draw_lrbt_rectangle_filled(
-                left-1,
-                right+1,
-                bottom-1,
-                top+1,
-                arcade.color.WHITE
+                left-2,
+                right+2,
+                bottom-2,
+                top+2,
+                (41,20,68)
             )
             arcade.draw_lrbt_rectangle_filled(
                 left,
