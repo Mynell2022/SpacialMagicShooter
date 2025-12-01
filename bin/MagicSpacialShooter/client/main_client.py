@@ -70,8 +70,8 @@ class GameWindow(arcade.Window):
         self.renderer.draw_ui(game_state, self.player_id)
 
         players = {
-            "ab12cd34": {"x": 350, "y": 350, "rotation": 0, "health": 70},
-            "fe56ab78": {"x": 300, "y": 380, "rotation": 0, "health": 100},
+            "ab12cd34": {"x": 350, "y": 350, "health": 70, "position": "stay"},
+            "fe56ab78": {"x": 300, "y": 380, "health": 100, "position": "right"},
         }
         self.renderer.draw_players(players, "ab12cd34")
     
