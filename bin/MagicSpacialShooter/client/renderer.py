@@ -378,8 +378,7 @@ class Renderer:
             else:  # formato legacy [x, y, angle]
                 x = bullet[0]
                 y = bullet[1]
-                angle = bullet[2]
-            
+                angle = bullet[2]     
             sprite = arcade.Sprite()
             sprite.texture = self.spell
             sprite.center_x = x

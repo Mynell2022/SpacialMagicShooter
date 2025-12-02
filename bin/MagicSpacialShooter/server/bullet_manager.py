@@ -7,7 +7,7 @@ class Bullet:
         self.owner_id = owner_id
         self.x = x
         self.y = y
-        self.angle = angle_deg
+        self.angle = -angle_deg
         self.lifetime = constants.BULLET_LIFETIME
         
         # Calcular velocidad basada en el ángulo
