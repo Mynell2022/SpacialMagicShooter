@@ -27,7 +27,7 @@ POWERUP_SIZE = 24
 POWERUP_SPAWN_COUNT = 5  # Cantidad inicial de power-ups en el mapa
 
 # === RED ===
-SERVER_IP = "localhost"
+SERVER_IP = "190.113.110.212"
 SERVER_INPUT_PORT = 5555
 SERVER_STATE_PORT = 5556
 
