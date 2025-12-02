@@ -70,10 +70,17 @@ class GameWindow(arcade.Window):
         self.renderer.draw_ui(game_state, self.player_id)
 
         players = {
-            "ab12cd34": {"x": 350, "y": 350, "health": 70, "position": "stay"},
-            "fe56ab78": {"x": 300, "y": 380, "health": 100, "position": "right"},
+            "ab12cd34": {"x": 265, "y": 95, "health": 70, "position": "stay"},
+            "fe56ab78": {"x": 1010, "y": 620, "health": 100, "position": "right"}
         }
         self.renderer.draw_players(players, "ab12cd34")
+        spells = [
+            [400, 200, 180],
+            [600, 600, 90],
+            [900, 300, 240]
+        ]
+        self.renderer.draw_bullets(spells)
+
     
     def on_update(self, delta_time):
         """

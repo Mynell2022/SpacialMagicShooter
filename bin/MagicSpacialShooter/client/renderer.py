@@ -34,8 +34,11 @@ class Renderer:
         self.enemy_down = arcade.load_texture(os.path.join(res_path, "enemy_down.png"))
         self.player_down = arcade.load_texture(os.path.join(res_path, "player_down.png"))
 
+        self.spell = arcade.load_texture(os.path.join(res_path, "spell.png"))
+
         self.screen_texture = arcade.load_texture(os.path.join(res_path, "SpacialMagicScreen.png"))
         self.player_list = arcade.SpriteList()
+        self.spells_list = arcade.SpriteList()
         
     def draw_background(self):
         """Dibuja el fondo del juego (espacio)"""
@@ -249,14 +252,25 @@ class Renderer:
         # Finalmente dibujar todos los sprites DE UNA VEZ
         self.player_list.draw()
     
-    def draw_bullets(self, bullets):
+    def draw_bullets(self, spells):
         """
         Dibuja los proyectiles en el mapa
         
         Args:
             bullets: Lista de diccionarios con {x, y, player_id}
         """
-        pass
+        self.spells_list.clear()
+
+        for s in spells:
+            texture = self.spell
+            sprite = arcade.Sprite()
+            sprite.texture = texture
+            sprite.center_x = s[0]
+            sprite.center_y = s[1]
+            sprite.angle = s[2]
+            sprite.scale = 1
+            self.spells_list.append(sprite)
+        self.spells_list.draw()
 
     def draw_ui(self, game_state, local_player_id):
         """
