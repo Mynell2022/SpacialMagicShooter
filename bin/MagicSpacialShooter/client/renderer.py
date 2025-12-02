@@ -3,7 +3,10 @@
 Módulo de renderizado - Dibuja el mapa, objetos y jugadores
 """
 import arcade
-from config import *
+import pathlib
+from client.config import *
+
+ASSETS_DIR = pathlib.Path(__file__).resolve().parent / "resources"
 
 class Renderer:
     def __init__(self):
@@ -15,8 +18,8 @@ class Renderer:
             'damage': arcade.color.RED,
             'shield': arcade.color.BLUE
         }
-        self.default_texture = arcade.load_texture("resources/enemy_stay.png")
-        self.local_texture = arcade.load_texture("resources/player_stay.png")
+        self.default_texture = arcade.load_texture(str(ASSETS_DIR / "enemy_stay.png"))
+        self.local_texture = arcade.load_texture(str(ASSETS_DIR / "player_stay.png"))
         self.player_list = arcade.SpriteList()
         
     def draw_background(self):

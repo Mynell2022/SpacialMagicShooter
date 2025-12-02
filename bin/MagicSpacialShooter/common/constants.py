@@ -34,28 +34,18 @@ PLAYER_MAX_HEALTH = 100
 
 # Tipos de robots disponibles en el juego.
 # Cada tipo define HP, velocidad y un "color" lógico para usar en el cliente.
-ROBOT_TYPES = {
-    "scout": {
-        "max_hp": 80,
-        "speed": 260.0,
-        "color": "CYAN",      # Cliente puede mapear esto a un color real
-    },
-    "tank": {
-        "max_hp": 150,
-        "speed": 160.0,
-        "color": "ORANGE",
-    },
-    "sniper": {
-        "max_hp": 90,
-        "speed": 220.0,
-        "color": "PURPLE",
-    },
-    "medic": {
+WIZARD_TYPES = {
+    "blue_mage": {
         "max_hp": 100,
-        "speed": 200.0,
-        "color": "GREEN",
+        "speed": 220.0,
+        "color": "BLUE",     # El renderer decidirá el sprite real
     },
+    "red_mage": {
+        "max_hp": 120,
+        "speed": 200.0,
+        "color": "RED",
+    }
 }
 
 # Tipo de robot por defecto si algo falla
-DEFAULT_ROBOT_TYPE = "scout"
+DEFAULT_WIZARD_TYPE = "blue_mage"
