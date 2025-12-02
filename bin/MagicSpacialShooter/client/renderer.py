@@ -2,6 +2,7 @@
 """
 Módulo de renderizado - Dibuja el mapa, objetos y jugadores
 """
+import os
 import arcade
 from config import *
 
@@ -15,20 +16,25 @@ class Renderer:
             'damage': arcade.color.RED,
             'shield': arcade.color.BLUE
         }
-        self.enemy_stay = arcade.load_texture("resources/enemy_stay.png")
-        self.player_stay = arcade.load_texture("resources/player_stay.png")
+        
+        # Resolve path to resources relative to this script
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        res_path = os.path.join(base_path, "resources")
 
-        self.enemy_right = arcade.load_texture("resources/enemy_right.png")
-        self.player_right = arcade.load_texture("resources/player_right.png")
-        self.enemy_left = arcade.load_texture("resources/enemy_left.png")
-        self.player_left = arcade.load_texture("resources/player_left.png")
+        self.enemy_stay = arcade.load_texture(os.path.join(res_path, "enemy_stay.png"))
+        self.player_stay = arcade.load_texture(os.path.join(res_path, "player_stay.png"))
 
-        self.enemy_up = arcade.load_texture("resources/enemy_up.png")
-        self.player_up = arcade.load_texture("resources/player_up.png")
-        self.enemy_down = arcade.load_texture("resources/enemy_down.png")
-        self.player_down = arcade.load_texture("resources/player_down.png")
+        self.enemy_right = arcade.load_texture(os.path.join(res_path, "enemy_right.png"))
+        self.player_right = arcade.load_texture(os.path.join(res_path, "player_right.png"))
+        self.enemy_left = arcade.load_texture(os.path.join(res_path, "enemy_left.png"))
+        self.player_left = arcade.load_texture(os.path.join(res_path, "player_left.png"))
 
-        self.screen_texture = arcade.load_texture("resources/SpacialMagicScreen.png")
+        self.enemy_up = arcade.load_texture(os.path.join(res_path, "enemy_up.png"))
+        self.player_up = arcade.load_texture(os.path.join(res_path, "player_up.png"))
+        self.enemy_down = arcade.load_texture(os.path.join(res_path, "enemy_down.png"))
+        self.player_down = arcade.load_texture(os.path.join(res_path, "player_down.png"))
+
+        self.screen_texture = arcade.load_texture(os.path.join(res_path, "SpacialMagicScreen.png"))
         self.player_list = arcade.SpriteList()
         
     def draw_background(self):
