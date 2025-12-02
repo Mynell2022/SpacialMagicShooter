@@ -68,19 +68,37 @@ class GameWindow(arcade.Window):
         
         # UI
         self.renderer.draw_ui(game_state, self.player_id)
-
-        players = {
-            "ab12cd34": {"x": 265, "y": 95, "health": 70, "position": "stay"},
-            "fe56ab78": {"x": 1010, "y": 620, "health": 100, "position": "right"}
-        }
+        """
+        players = [
+            {"id": "ab12cd34", "x": 265, "y": 95, "hp": 70, "position": "stay"},
+            {"id": "fe56ab78", "x": 1010, "y": 620, "hp": 100, "position": "right"},
+            {"id": "p1aa22", "x": 50, "y": 50, "hp": 90, "position": "left"},
+            {"id": "p2bb33", "x": 1050, "y": 40, "hp": 85, "position": "stay"},
+            {"id": "p3cc44", "x": 40, "y": 650, "hp": 60, "position": "right"},
+            {"id": "p4dd55", "x": 1080, "y": 680, "hp": 75, "position": "up"},
+            {"id": "p5ee66", "x": 550, "y": 350, "hp": 100, "position": "down"},
+            {"id": "p6ff77", "x": 600, "y": 150, "hp": 95, "position": "stay"},
+            {"id": "p7gg88", "x": 500, "y": 580, "hp": 40, "position": "left"},
+            {"id": "p8hh99", "x": 300, "y": 400, "hp": 90, "position": "up"},
+            {"id": "p9ii00", "x": 850, "y": 250, "hp": 55, "position": "right"},
+            {"id": "p10jj11", "x": 750, "y": 500, "hp": 30, "position": "stay"}
+        ]
         self.renderer.draw_players(players, "ab12cd34")
         spells = [
-            [400, 200, 180],
-            [600, 600, 90],
-            [900, 300, 240]
+            [150, 120, 20],
+            [450, 100, 350],
+            [800, 80, 10],
+            [250, 300, 90],
+            [350, 350, 270],
+            [600, 350, 180],
+            [700, 400, 45],
+            [1000, 320, 200],
+            [1150, 280, 300],
+            [300, 600, 60],
+            [700, 650, 120],
+            [900, 580, 250],
         ]
-        self.renderer.draw_bullets(spells)
-
+        self.renderer.draw_bullets(spells)"""
     
     def on_update(self, delta_time):
         """

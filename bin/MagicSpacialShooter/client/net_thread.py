@@ -56,8 +56,8 @@ class NetIOThread(threading.Thread):
             self.sub_socket.connect(f"tcp://{server_address}:{state_port}")
             
             print(f"[NetIOThread] Conectado al servidor {server_address}")
-            print(f"  📤 Enviando inputs a puerto {input_port}")
-            print(f"  📥 Recibiendo estado desde puerto {state_port}")
+            print(f"Enviando inputs a puerto {input_port}")
+            print(f"Recibiendo estado desde puerto {state_port}")
             
             self.running = True
             

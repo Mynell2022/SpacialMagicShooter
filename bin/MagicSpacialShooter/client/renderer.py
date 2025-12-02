@@ -174,10 +174,12 @@ class Renderer:
         # Convertir lista a dict si es necesario (para compatibilidad)
         if isinstance(players, list):
             for player_data in players:
+                print(player_data)
                 pid = player_data.get("id", "unknown")
                 x = player_data.get("x", 0)
                 y = player_data.get("y", 0)
                 health = player_data.get("hp", 100)
+                maxhealth = player_data.get("max_hp", 100)
                 direction = player_data.get("position", "stay")
 
                 # Seleccionar textura
@@ -216,43 +218,37 @@ class Renderer:
 
                 # Agregar a la lista
                 self.player_list.append(sprite)
+                # === BARRA DE VIDA ===
+                bar_width = 4
+                bar_height = 30
+                bar_offset = 40
 
-            # === BARRA DE VIDA ===
-            bar_width = 4
-            bar_height = 30
-            bar_offset = 40
+                left = x - (bar_height / 2)
+                right = x + (bar_height / 2)
+                bottom = y + bar_offset - (bar_width / 2)
+                top = y + bar_offset + (bar_width / 2)
 
-            left = x - (bar_height / 2)
-            right = x + (bar_height / 2)
-
-            # Extremos verticales → altura pequeña
-            bottom = y + bar_offset - (bar_width / 2)
-            top = y + bar_offset + (bar_width / 2)
-
-
-            arcade.draw_lrbt_rectangle_filled(
-                left-2,
-                right+2,
-                bottom-2,
-                top+2,
-                (41,20,68)
-            )
-            arcade.draw_lrbt_rectangle_filled(
-                left,
-                right,
-                bottom,
-                top,
-                arcade.color.GREEN
-            )
-            arcade.draw_lrbt_rectangle_filled(
-                left,
-                right-(right-left)*(health/100),
-                bottom,
-                top,
-                arcade.color.RED
-            )
-
-        # Finalmente dibujar todos los sprites DE UNA VEZ
+                arcade.draw_lrbt_rectangle_filled(
+                    left-2,
+                    right+2,
+                    bottom-2,
+                    top+2,
+                    (41,20,68)
+                )
+                arcade.draw_lrbt_rectangle_filled(
+                    left,
+                    right,
+                    bottom,
+                    top,
+                    arcade.color.GREEN
+                )
+                arcade.draw_lrbt_rectangle_filled(
+                    left+(right-left)*(health/maxhealth),
+                    right,
+                    bottom,
+                    top,
+                    arcade.color.RED
+                )
         self.player_list.draw()
     
     def draw_bullets(self, spells):

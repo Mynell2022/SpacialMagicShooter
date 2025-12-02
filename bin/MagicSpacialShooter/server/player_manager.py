@@ -34,19 +34,12 @@ class RobotPlayer:
         self.hp: int = template["max_hp"]
         self.speed: float = template["speed"]
         self.color_tag: str = template["color"]
-        
-        
-        
-        
-
+        self.position: str = "stay"
         # Posición y orientación
         self.x: float = start_x
         self.y: float = start_y
         self.rotation: float = 0.0  # grados (0 = hacia la derecha)
         
-        
-        
-
         # Campo extra para que el resto del equipo pueda guardar cosas específicas
         self.metadata: dict = {}
 
@@ -67,6 +60,7 @@ class RobotPlayer:
             "hp": self.hp,
             "max_hp": self.max_hp,
             "color_tag": self.color_tag,
+            "position": self.position,
         }
 
     def __repr__(self) -> str:
@@ -157,13 +151,19 @@ def update_player_movement(player: RobotPlayer, inputs: dict, delta_time: float)
     dy = 0.0
 
     if inputs.get("up"):
+        player.position = "up"
         dy += 1.0
-    if inputs.get("down"):
+    elif inputs.get("down"):
+        player.position = "down"
         dy -= 1.0
-    if inputs.get("left"):
+    elif inputs.get("left"):
+        player.position = "left"
         dx -= 1.0
-    if inputs.get("right"):
+    elif inputs.get("right"):
+        player.position = "right"
         dx += 1.0
+    else:
+        player.position = "stay"
 
     # Normalización en diagonal
     if dx != 0.0 and dy != 0.0:
@@ -176,8 +176,8 @@ def update_player_movement(player: RobotPlayer, inputs: dict, delta_time: float)
     player.y += dy * player.speed * delta_time
 
     # Restringir al área del mapa
-    player.x = max(0.0, min(player.x, float(constants.MAP_WIDTH)))
-    player.y = max(0.0, min(player.y, float(constants.MAP_HEIGHT)))
+    player.x = max(265.0, min(player.x, 1010))
+    player.y = max(95.0, min(player.y, 620))
 
 
 def update_player_rotation(player: RobotPlayer, inputs: dict) -> None:
