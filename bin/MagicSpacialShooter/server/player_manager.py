@@ -27,6 +27,7 @@ class WizardPlayer:
         self.hp: int = template["max_hp"]
         self.speed: float = template["speed"]
         self.color_tag: str = template["color"]  # etiqueta para el cliente si quiere usarla
+        self.damage: str = template["damage"]
 
         # Posición y orientación
         self.x: float = start_x
@@ -73,6 +74,7 @@ class WizardPlayer:
             "max_hp": self.max_hp,
             "color_tag": self.color_tag,
             "position": self.position,  # usado por renderer
+            "damage": self.damage,
         }
 
     def __repr__(self) -> str:

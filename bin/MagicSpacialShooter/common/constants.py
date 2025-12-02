@@ -15,6 +15,7 @@ MAP_HEIGHT = 600
 # Tamaño aproximado del sprite del robot (para colisiones / centrado)
 PLAYER_WIDTH = 48
 PLAYER_HEIGHT = 48
+PLAYER_RADIUS = 32
 
 # Límites del área de juego (zona jugable en pantalla)
 GAME_AREA_MIN_X = 265.0
@@ -34,6 +35,8 @@ GAME_PLAYING = 'playing'
 GAME_FINISHED = 'finished'
 
 # Física
+BULLET_DAMAGE = 10
+BULLET_RADIUS = 16
 BULLET_SPEED = 400
 BULLET_LIFETIME = 3.0
 PLAYER_MAX_HEALTH = 100
@@ -43,22 +46,26 @@ PLAYER_MAX_HEALTH = 100
 ROBOT_TYPES = {
     "scout": {
         "max_hp": 80,
-        "speed": 260.0,
+        "speed": 220.0,
+        "damage": 20,
         "color": "CYAN",      # Cliente puede mapear esto a un color real
     },
     "tank": {
         "max_hp": 150,
         "speed": 160.0,
+        "damage": 10,
         "color": "ORANGE",
     },
     "sniper": {
-        "max_hp": 90,
-        "speed": 220.0,
+        "max_hp": 60,
+        "speed": 260.0,
+        "damage": 40,
         "color": "PURPLE",
     },
     "medic": {
         "max_hp": 100,
         "speed": 200.0,
+        "damage": 20,
         "color": "GREEN",
     },
 }

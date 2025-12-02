@@ -53,6 +53,46 @@ class BulletManager:
             and constants.GAME_AREA_MIN_X <= b.x <= constants.GAME_AREA_MAX_X 
             and constants.GAME_AREA_MIN_Y <= b.y <= constants.GAME_AREA_MAX_Y
         ]
+    def handle_collisions(self, players):
+        bullets_to_remove = set()
+        for bullet in self.bullets:
+            for player in players:
+                if bullet.owner_id == player.id:
+                    continue  # no dañarse a sí mismo
+                dx = bullet.x - player.x
+                dy = bullet.y - player.y
+                dist_sq = dx*dx + dy*dy
+
+                collision_dist = constants.PLAYER_RADIUS + constants.BULLET_RADIUS
+
+                if dist_sq <= collision_dist * collision_dist:
+                    player.hp -= player.damage
+                    bullets_to_remove.add(bullet)
+                    break
+
+        for i in range(len(self.bullets)):
+            b1 = self.bullets[i]
+            if b1 in bullets_to_remove:
+                continue
+
+            for j in range(i + 1, len(self.bullets)):
+                b2 = self.bullets[j]
+                if b2 in bullets_to_remove:
+                    continue
+
+                dx = b1.x - b2.x
+                dy = b1.y - b2.y
+                dist_sq = dx*dx + dy*dy
+
+                collision_dist = constants.BULLET_RADIUS * 2
+
+                if dist_sq <= collision_dist * collision_dist:
+                    bullets_to_remove.add(b1)
+                    bullets_to_remove.add(b2)
+
+        for b in bullets_to_remove:
+            if b in self.bullets:
+                self.bullets.remove(b)
 
     def get_all_bullets(self):
         return self.bullets

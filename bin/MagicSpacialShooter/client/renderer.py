@@ -347,6 +347,15 @@ class Renderer:
                 bottom, top,
                 arcade.color.RED
             )
+            cx = left + (right - left) * 0.5
+            cy = (top + 5 + top + 10) / 2 
+            points = [
+                [cx, cy + 4],
+                [cx + 4, cy],
+                [cx, cy - 4],
+                [cx - 4, cy],
+            ]
+            arcade.draw_polygon_filled(points, getattr(arcade.color, player_data.get("color_tag", "CYAN")))
 
             # barra verde proporcional (vida actual)
             green_right = left + (right - left) * health_pct
