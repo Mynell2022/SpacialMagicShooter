@@ -32,11 +32,11 @@ class InputCapturer:
         """
         if key == arcade.key.W or key == arcade.key.UP:
             self.input_state['up'] = True
-        elif key == arcade.key.S or key == arcade.key.DOWN:
+        if key == arcade.key.S or key == arcade.key.DOWN:
             self.input_state['down'] = True
-        elif key == arcade.key.A or key == arcade.key.LEFT:
+        if key == arcade.key.A or key == arcade.key.LEFT:
             self.input_state['left'] = True
-        elif key == arcade.key.D or key == arcade.key.RIGHT:
+        if key == arcade.key.D or key == arcade.key.RIGHT:
             self.input_state['right'] = True
     
     def on_key_release(self, key, modifiers):
@@ -45,11 +45,11 @@ class InputCapturer:
         """
         if key == arcade.key.W or key == arcade.key.UP:
             self.input_state['up'] = False
-        elif key == arcade.key.S or key == arcade.key.DOWN:
+        if key == arcade.key.S or key == arcade.key.DOWN:
             self.input_state['down'] = False
-        elif key == arcade.key.A or key == arcade.key.LEFT:
+        if key == arcade.key.A or key == arcade.key.LEFT:
             self.input_state['left'] = False
-        elif key == arcade.key.D or key == arcade.key.RIGHT:
+        if key == arcade.key.D or key == arcade.key.RIGHT:
             self.input_state['right'] = False
     
     def on_mouse_motion(self, x, y, dx, dy):

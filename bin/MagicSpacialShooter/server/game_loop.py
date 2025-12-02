@@ -59,7 +59,7 @@ class GameServer:
             self._process_inputs(delta_time)
 
             # 2. Actualizar Mundo (Física, Colisiones, etc.)
-            self.bullet_manager.handle_collisions(self.player_manager.get_all_players())
+            self.bullet_manager.handle_collisions(self.player_manager)
             self.bullet_manager.update(delta_time)
 
             # 3. Difundir Estado

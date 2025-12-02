@@ -98,7 +98,7 @@ class GameWindow(arcade.Window):
         """Limpieza al cerrar"""
         if self.net_thread:
             self.net_thread.stop()
-            self.net_thread.join(1000)
+            #self.net_thread.join(1000)
         print("Cliente cerrado")
         self.close()
 

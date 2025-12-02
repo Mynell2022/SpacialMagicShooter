@@ -47,11 +47,11 @@ ROBOT_TYPES = {
     "scout": {
         "max_hp": 80,
         "speed": 220.0,
-        "damage": 20,
+        "damage": 25,
         "color": "CYAN",      # Cliente puede mapear esto a un color real
     },
     "tank": {
-        "max_hp": 150,
+        "max_hp": 140,
         "speed": 160.0,
         "damage": 10,
         "color": "ORANGE",
