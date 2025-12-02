@@ -174,7 +174,6 @@ class Renderer:
         # Convertir lista a dict si es necesario (para compatibilidad)
         if isinstance(players, list):
             for player_data in players:
-                print(player_data)
                 pid = player_data.get("id", "unknown")
                 x = player_data.get("x", 0)
                 y = player_data.get("y", 0)

@@ -177,7 +177,7 @@ def update_player_movement(player: RobotPlayer, inputs: dict, delta_time: float)
 
     # Restringir al área del mapa
     player.x = max(265.0, min(player.x, 1010))
-    player.y = max(95.0, min(player.y, 620))
+    player.y = max(95.0, min(player.y, 630))
 
 
 def update_player_rotation(player: RobotPlayer, inputs: dict) -> None:
