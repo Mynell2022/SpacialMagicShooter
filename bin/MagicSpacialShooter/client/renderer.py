@@ -171,89 +171,98 @@ class Renderer:
         # Limpia la lista para este frame
         self.player_list.clear()
 
-        # Convertir lista a dict si es necesario (para compatibilidad)
-        if isinstance(players, list):
-            for player_data in players:
-                pid = player_data.get("id", "unknown")
-                x = player_data.get("x", 0)
-                y = player_data.get("y", 0)
-                health = player_data.get("hp", 100)
-                direction = player_data.get("position", "stay")
+        # Normalizar formato: aceptar dict o lista
+        if isinstance(players, dict):
+            iterable = players.values()       # {id: data} -> solo los datos
+        elif isinstance(players, list):
+            iterable = players                # ya viene como lista
+        else:
+            return  # nada que dibujar
 
-                # Seleccionar textura
-                texture = self.player_stay
-                if pid == local_player_id:
-                    match direction:
-                        case "up":
-                            texture = self.player_up
-                        case "down":
-                            texture = self.player_down
-                        case "right":
-                            texture = self.player_right
-                        case "left":
-                            texture = self.player_left
-                        case "stay":
-                            texture = self.player_stay
-                else:
-                    match direction:
-                        case "up":
-                            texture = self.enemy_up
-                        case "down":
-                            texture = self.enemy_down
-                        case "right":
-                            texture = self.enemy_right
-                        case "left":
-                            texture = self.enemy_left
-                        case "stay":
-                            texture = self.enemy_stay
-                # Crear sprite del jugador
-                sprite = arcade.Sprite()
-                sprite.texture = texture
-                sprite.center_x = x
-                sprite.center_y = y
-                sprite.angle = 0
-                sprite.scale = 1
+        for player_data in iterable:
+            pid = player_data.get("id", "unknown")
+            x = player_data.get("x", 0)
+            y = player_data.get("y", 0)
+            health = player_data.get("hp", 100)
+            max_hp = player_data.get("max_hp", 100)
+            direction = player_data.get("position", "stay")
 
-                # Agregar a la lista
-                self.player_list.append(sprite)
+            # --- elegir sprite ---
+            if pid == local_player_id:
+                match direction:
+                    case "up":
+                        texture = self.player_up
+                    case "down":
+                        texture = self.player_down
+                    case "right":
+                        texture = self.player_right
+                    case "left":
+                        texture = self.player_left
+                    case _:
+                        texture = self.player_stay
+            else:
+                match direction:
+                    case "up":
+                        texture = self.enemy_up
+                    case "down":
+                        texture = self.enemy_down
+                    case "right":
+                        texture = self.enemy_right
+                    case "left":
+                        texture = self.enemy_left
+                    case _:
+                        texture = self.enemy_stay
 
-            # === BARRA DE VIDA ===
+            # --- sprite del jugador ---
+            sprite = arcade.Sprite()
+            sprite.texture = texture
+            sprite.center_x = x
+            sprite.center_y = y
+            sprite.angle = 0
+            sprite.scale = 1
+            self.player_list.append(sprite)
+
+            # --- barra de vida para ESTE jugador ---
+            # clamp y porcentaje
+            if max_hp <= 0:
+                max_hp = 1
+            health = max(0, min(health, max_hp))
+            health_pct = health / max_hp
+
             bar_width = 4
             bar_height = 30
             bar_offset = 40
 
             left = x - (bar_height / 2)
             right = x + (bar_height / 2)
-
-            # Extremos verticales → altura pequeña
             bottom = y + bar_offset - (bar_width / 2)
             top = y + bar_offset + (bar_width / 2)
 
+            # fondo
+            arcade.draw_lrbt_rectangle_filled(
+                left - 2, right + 2,
+                bottom - 2, top + 2,
+                (41, 20, 68)
+            )
 
+            # barra roja completa (vida vacía)
             arcade.draw_lrbt_rectangle_filled(
-                left-2,
-                right+2,
-                bottom-2,
-                top+2,
-                (41,20,68)
-            )
-            arcade.draw_lrbt_rectangle_filled(
-                left,
-                right,
-                bottom,
-                top,
-                arcade.color.GREEN
-            )
-            arcade.draw_lrbt_rectangle_filled(
-                left,
-                right-(right-left)*(health/100),
-                bottom,
-                top,
+                left, right,
+                bottom, top,
                 arcade.color.RED
+            )
+
+            # barra verde proporcional (vida actual)
+            green_right = left + (right - left) * health_pct
+            arcade.draw_lrbt_rectangle_filled(
+                left, green_right,
+                bottom, top,
+                arcade.color.GREEN
             )
 
         # Finalmente dibujar todos los sprites DE UNA VEZ
         self.player_list.draw()
+
     
     def draw_bullets(self, spells):
         """

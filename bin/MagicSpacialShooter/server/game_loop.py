@@ -93,18 +93,24 @@ class GameServer:
 
     def _broadcast_state(self):
         """
-        Recopila el estado de todos los jugadores y lo envía a la red.
+        Construye el snapshot del mundo y lo envía a todos los clientes.
         """
         players_list = self.player_manager.get_all_players()
-        
-        # Construir snapshot del mundo
-        # Formato: {"players": [ {data_jugador}, ... ], "timestamp": ...}
+
+        # Dict {id: data} para que el cliente sea feliz
+        players_dict = {p.id: p.to_dict() for p in players_list}
+
         state_snapshot = {
-            "players": [p.to_dict() for p in players_list],
-            "timestamp": time.time()
+            "type": "state",
+            "players": players_dict, 
+            "bullets": [],            
+            "powerups": [],          
+            "scores": {},          
+            "game_time": 0,          
         }
 
         self.broadcaster.broadcast(state_snapshot)
+
 
     def stop(self):
         """

@@ -48,38 +48,24 @@ class GameWindow(arcade.Window):
         print("Mapa y objetos listos para recibir datos")
     
     def on_draw(self):
-        """
-        Dibuja el mapa y objetos (power-ups) ===
-        """
+        """Dibuja el mapa, objetos y jugadores reales del servidor"""
         self.clear()
         
-        # Obtener estado actual del juego
+        # Estado que viene del servidor vía NetIOThread
         game_state = self.state_store.get_state()
         
-        # === RENDERIZADO DEL MAPA Y OBJETOS ===
+        # Fondo y mapa
         self.renderer.draw_background()
-        #self.renderer.draw_map_borders()
+        # self.renderer.draw_map_borders()  # opcional
         
-        # === Power-ups ===
+        # Objetos del juego
         self.renderer.draw_powerups(game_state.get('powerups', []))
-        
         self.renderer.draw_bullets(game_state.get('bullets', []))
         self.renderer.draw_players(game_state.get('players', {}), self.player_id)
         
         # UI
         self.renderer.draw_ui(game_state, self.player_id)
 
-        players = {
-            "ab12cd34": {"x": 265, "y": 95, "health": 70, "position": "stay"},
-            "fe56ab78": {"x": 1010, "y": 620, "health": 100, "position": "right"}
-        }
-        self.renderer.draw_players(players, "ab12cd34")
-        spells = [
-            [400, 200, 180],
-            [600, 600, 90],
-            [900, 300, 240]
-        ]
-        self.renderer.draw_bullets(spells)
 
     
     def on_update(self, delta_time):

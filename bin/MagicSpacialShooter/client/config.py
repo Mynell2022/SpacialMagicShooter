@@ -26,10 +26,10 @@ PLAYER_SPEED = 200  # pixels por segundo
 POWERUP_SIZE = 24
 POWERUP_SPAWN_COUNT = 5  # Cantidad inicial de power-ups en el mapa
 
-# === RED ===
-SERVER_IP = "190.113.110.212"
+SERVER_IP = "127.0.0.1"  # localhost
 SERVER_INPUT_PORT = 5555
 SERVER_STATE_PORT = 5556
+
 
 # === FÍSICA ===
 FPS = 60
