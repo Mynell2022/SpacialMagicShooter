@@ -1,4 +1,3 @@
-# server/player_manager.py
 """
 ENTIDADES - Magos (Joseph)
 
@@ -33,6 +32,7 @@ class WizardPlayer:
         self.x: float = start_x
         self.y: float = start_y
         self.rotation: float = 0.0  # grados, 0 = derecha
+        self.position: str = "stay"  # dirección lógica para el renderer
 
         # Campo libre para el resto del equipo
         self.metadata: dict = {}
@@ -42,7 +42,7 @@ class WizardPlayer:
     def get_direction(self) -> str:
         """
         Dirección lógica según la rotación.
-        El cliente usa esto para escoger sprite (up/down/left/right/stay).
+        (Opcional, por si luego quieren usar rotación para sprites).
         """
         a = self.rotation % 360.0
 
@@ -68,7 +68,7 @@ class WizardPlayer:
             "hp": self.hp,
             "max_hp": self.max_hp,
             "color_tag": self.color_tag,
-            "position": self.get_direction(),  # 👈 NUEVO: usado por renderer
+            "position": self.position,  # usado por renderer
         }
 
     def __repr__(self) -> str:
@@ -124,7 +124,7 @@ class PlayerManager:
 
 def update_player_movement(player: WizardPlayer, inputs: dict, delta_time: float) -> None:
     """
-    Aplica movimiento base según WASD.
+    Aplica movimiento base según WASD y actualiza la 'position' lógica.
     """
     dx = 0.0
     dy = 0.0
@@ -154,7 +154,7 @@ def update_player_movement(player: WizardPlayer, inputs: dict, delta_time: float
     player.x += dx * player.speed * delta_time
     player.y += dy * player.speed * delta_time
 
-    # Limites de mapa
+    # Limites de mapa lógicos
     player.x = max(0.0, min(player.x, float(constants.MAP_WIDTH)))
     player.y = max(0.0, min(player.y, float(constants.MAP_HEIGHT)))
 
