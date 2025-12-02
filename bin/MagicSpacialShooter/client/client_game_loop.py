@@ -38,28 +38,30 @@ class ClientGameLoop:
         Args:
             state: Estado actual del juego
         """
-        players = state.get('players', {})
+        players = state.get('players', [])
         
-        for player_id, player_data in players.items():
-            # Obtener posición actual
-            x = player_data.get('x', 0)
-            y = player_data.get('y', 0)
-            
-            # Límites del mapa (coordenadas relativas al mapa, no a la pantalla)
-            min_x = PLAYER_SIZE / 2
-            max_x = MAP_WIDTH - PLAYER_SIZE / 2
-            min_y = PLAYER_SIZE / 2
-            max_y = MAP_HEIGHT - PLAYER_SIZE / 2
-            
-            # Clamping (ajustar a límites)
-            clamped_x = max(min_x, min(x, max_x))
-            clamped_y = max(min_y, min(y, max_y))
-            
-            # Si hubo cambio, actualizar localmente
-            # (el servidor enviará la posición correcta después)
-            if clamped_x != x or clamped_y != y:
-                player_data['x'] = clamped_x
-                player_data['y'] = clamped_y
+        # Si players viene como lista (formato del servidor)
+        if isinstance(players, list):
+            for player_data in players:
+                # Obtener posición actual
+                x = player_data.get('x', 0)
+                y = player_data.get('y', 0)
+                
+                # Límites del mapa (coordenadas relativas al mapa, no a la pantalla)
+                min_x = PLAYER_SIZE / 2
+                max_x = MAP_WIDTH - PLAYER_SIZE / 2
+                min_y = PLAYER_SIZE / 2
+                max_y = MAP_HEIGHT - PLAYER_SIZE / 2
+                
+                # Clamping (ajustar a límites)
+                clamped_x = max(min_x, min(x, max_x))
+                clamped_y = max(min_y, min(y, max_y))
+                
+                # Si hubo cambio, actualizar localmente
+                # (el servidor enviará la posición correcta después)
+                if clamped_x != x or clamped_y != y:
+                    player_data['x'] = clamped_x
+                    player_data['y'] = clamped_y
     
     def is_position_in_map(self, x, y):
         """
