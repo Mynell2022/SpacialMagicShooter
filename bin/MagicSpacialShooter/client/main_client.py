@@ -86,6 +86,14 @@ class GameWindow(arcade.Window):
         """Captura movimiento del mouse para apuntar"""
         self.input_capturer.on_mouse_motion(x, y, dx, dy)
     
+    def on_mouse_press(self, x, y, button, modifiers):
+        """Captura clic del mouse para disparar"""
+        self.input_capturer.on_mouse_press(x, y, button, modifiers)
+    
+    def on_mouse_release(self, x, y, button, modifiers):
+        """Captura soltar botón del mouse"""
+        self.input_capturer.on_mouse_release(x, y, button, modifiers)
+    
     def on_close(self):
         """Limpieza al cerrar"""
         if self.net_thread:

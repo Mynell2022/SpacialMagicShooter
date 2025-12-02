@@ -33,6 +33,10 @@ class WizardPlayer:
         self.y: float = start_y
         self.rotation: float = 0.0  # grados, 0 = derecha
         self.position: str = "stay"  # dirección lógica para el renderer
+        
+        # Cooldown de disparo
+        self.last_shot_time: float = 0.0
+
 
         # Campo libre para el resto del equipo
         self.metadata: dict = {}
@@ -155,8 +159,8 @@ def update_player_movement(player: WizardPlayer, inputs: dict, delta_time: float
     player.y += dy * player.speed * delta_time
 
     # Limites de mapa lógicos
-    player.x = max(265.0, min(player.x, 1010))
-    player.y = max(95.0, min(player.y, 630))
+    player.x = max(constants.GAME_AREA_MIN_X, min(player.x, constants.GAME_AREA_MAX_X))
+    player.y = max(constants.GAME_AREA_MIN_Y, min(player.y, constants.GAME_AREA_MAX_Y))
 
 
 def update_player_rotation(player: WizardPlayer, inputs: dict) -> None:

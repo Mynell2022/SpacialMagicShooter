@@ -360,24 +360,34 @@ class Renderer:
         self.player_list.draw()
 
     
-    def draw_bullets(self, spells):
+    def draw_bullets(self, bullets):
         """
         Dibuja los proyectiles en el mapa
         
         Args:
-            bullets: Lista de diccionarios con {x, y, player_id}
+            bullets: Lista de diccionarios con {id, owner, x, y, angle} o [x, y, angle]
         """
         self.spells_list.clear()
 
-        for s in spells:
-            texture = self.spell
+        for bullet in bullets:
+            # Soportar tanto formato de diccionario como lista [x, y, angle]
+            if isinstance(bullet, dict):
+                x = bullet.get('x', 0)
+                y = bullet.get('y', 0)
+                angle = bullet.get('angle', 0)
+            else:  # formato legacy [x, y, angle]
+                x = bullet[0]
+                y = bullet[1]
+                angle = bullet[2]
+            
             sprite = arcade.Sprite()
-            sprite.texture = texture
-            sprite.center_x = s[0]
-            sprite.center_y = s[1]
-            sprite.angle = s[2]
+            sprite.texture = self.spell
+            sprite.center_x = x
+            sprite.center_y = y
+            sprite.angle = angle
             sprite.scale = 1
             self.spells_list.append(sprite)
+        
         self.spells_list.draw()
 
     def draw_ui(self, game_state, local_player_id):

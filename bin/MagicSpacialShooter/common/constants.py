@@ -16,6 +16,12 @@ MAP_HEIGHT = 600
 PLAYER_WIDTH = 48
 PLAYER_HEIGHT = 48
 
+# Límites del área de juego (zona jugable en pantalla)
+GAME_AREA_MIN_X = 265.0
+GAME_AREA_MAX_X = 1010.0
+GAME_AREA_MIN_Y = 95.0
+GAME_AREA_MAX_Y = 630.0
+
 # Tipos de power-ups
 POWERUP_SPEED = 'speed'
 POWERUP_HEALTH = 'health'

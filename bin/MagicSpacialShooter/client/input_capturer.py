@@ -28,7 +28,7 @@ class InputCapturer:
     def on_key_press(self, key, modifiers):
         """
         Maneja eventos de teclas presionadas.
-        WASD para movimiento, Espacio para disparar.
+        WASD para movimiento.
         """
         if key == arcade.key.W or key == arcade.key.UP:
             self.input_state['up'] = True
@@ -38,8 +38,6 @@ class InputCapturer:
             self.input_state['left'] = True
         elif key == arcade.key.D or key == arcade.key.RIGHT:
             self.input_state['right'] = True
-        elif key == arcade.key.SPACE:
-            self.input_state['shoot'] = True
     
     def on_key_release(self, key, modifiers):
         """
@@ -53,8 +51,6 @@ class InputCapturer:
             self.input_state['left'] = False
         elif key == arcade.key.D or key == arcade.key.RIGHT:
             self.input_state['right'] = False
-        elif key == arcade.key.SPACE:
-            self.input_state['shoot'] = False
     
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -62,6 +58,20 @@ class InputCapturer:
         """
         self.mouse_x = x
         self.mouse_y = y
+    
+    def on_mouse_press(self, x, y, button, modifiers):
+        """
+        Captura clic izquierdo del mouse para disparar.
+        """
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            self.input_state['shoot'] = True
+    
+    def on_mouse_release(self, x, y, button, modifiers):
+        """
+        Maneja soltar el botón del mouse.
+        """
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            self.input_state['shoot'] = False
     
     def get_input_message(self):
         """

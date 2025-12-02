@@ -1,7 +1,9 @@
 import time
+import math
 from server.input_receiver import InputReceiver
 from server.broadcaster import StateBroadcaster
 from server.player_manager import PlayerManager, update_player_state
+from server.bullet_manager import BulletManager
 
 class GameServer:
     """
@@ -19,6 +21,7 @@ class GameServer:
 
         # Gestores de lógica de juego
         self.player_manager = PlayerManager()
+        self.bullet_manager = BulletManager()
 
         # Control de tiempo
         self.target_fps = 60
@@ -56,8 +59,7 @@ class GameServer:
             self._process_inputs(delta_time)
 
             # 2. Actualizar Mundo (Física, Colisiones, etc.)
-            # (Por ahora solo movimiento de jugadores en process_inputs, 
-            #  pero aquí irían colisiones de proyectiles, etc.)
+            self.bullet_manager.update(delta_time)
 
             # 3. Difundir Estado
             self._broadcast_state()
@@ -91,6 +93,29 @@ class GameServer:
             # Actualizar estado del jugador basado en inputs
             update_player_state(player, input_cmds, delta_time)
 
+            # Manejar disparo
+            if input_cmds.get("shoot"):
+                now = time.time()
+                if now - player.last_shot_time >= 0.5:  # 0.5s cooldown
+                    player.last_shot_time = now
+                    
+                    # Calcular ángulo hacia donde apunta el mouse
+                    aim_x = input_cmds.get("aim_x", player.x)
+                    aim_y = input_cmds.get("aim_y", player.y)
+                    
+                    dx = aim_x - player.x
+                    dy = aim_y - player.y
+                    
+                    if dx != 0 or dy != 0:
+                        angle = math.degrees(math.atan2(dy, dx))
+                        # Crear bala en la dirección del mouse
+                        self.bullet_manager.create_bullet(
+                            player.id, 
+                            player.x, 
+                            player.y, 
+                            angle
+                        )
+
     def _broadcast_state(self):
         """
         Construye el snapshot del mundo y lo envía a todos los clientes.
@@ -103,7 +128,7 @@ class GameServer:
         state_snapshot = {
             "type": "state",
             "players": players_dict, 
-            "bullets": [],            
+            "bullets": [b.to_dict() for b in self.bullet_manager.get_all_bullets()],
             "powerups": [],          
             "scores": {},          
             "game_time": 0,          
