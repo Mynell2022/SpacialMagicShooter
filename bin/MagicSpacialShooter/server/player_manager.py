@@ -155,8 +155,8 @@ def update_player_movement(player: WizardPlayer, inputs: dict, delta_time: float
     player.y += dy * player.speed * delta_time
 
     # Limites de mapa lógicos
-    player.x = max(0.0, min(player.x, float(constants.MAP_WIDTH)))
-    player.y = max(0.0, min(player.y, float(constants.MAP_HEIGHT)))
+    player.x = max(265.0, min(player.x, 1010))
+    player.y = max(95.0, min(player.y, 630))
 
 
 def update_player_rotation(player: WizardPlayer, inputs: dict) -> None:
