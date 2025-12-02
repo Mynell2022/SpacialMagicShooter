@@ -114,4 +114,4 @@ class LocalStateStore:
                 'game_time': 0
             }
             self.state_history.clear()
-            print("🗑️  Estado limpiado")
+            print("Estado limpiado")

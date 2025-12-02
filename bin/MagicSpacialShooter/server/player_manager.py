@@ -130,13 +130,19 @@ def update_player_movement(player: WizardPlayer, inputs: dict, delta_time: float
     dy = 0.0
 
     if inputs.get("up"):
+        player.position = "up"
         dy += 1.0
-    if inputs.get("down"):
+    elif inputs.get("down"):
+        player.position = "down"
         dy -= 1.0
-    if inputs.get("left"):
+    elif inputs.get("left"):
+        player.position = "left"
         dx -= 1.0
-    if inputs.get("right"):
+    elif inputs.get("right"):
+        player.position = "right"
         dx += 1.0
+    else:
+        player.position = "stay"
 
     # Normalizar diagonal
     if dx != 0.0 and dy != 0.0:
