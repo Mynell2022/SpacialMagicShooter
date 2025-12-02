@@ -168,48 +168,51 @@ class Renderer:
         # Limpia la lista para este frame
         self.player_list.clear()
 
-        for pid, pdata in players.items():
-            x = pdata.get("x", 0)
-            y = pdata.get("y", 0)
-            health = pdata.get("health", 100)
-            direction = pdata.get("position", "stay")
+        # Convertir lista a dict si es necesario (para compatibilidad)
+        if isinstance(players, list):
+            for player_data in players:
+                pid = player_data.get("id", "unknown")
+                x = player_data.get("x", 0)
+                y = player_data.get("y", 0)
+                health = player_data.get("hp", 100)
+                direction = player_data.get("position", "stay")
 
-            # Seleccionar textura
-            texture = self.player_stay
-            if pid == local_player_id:
-                match direction:
-                    case "up":
-                        texture = self.player_up
-                    case "down":
-                        texture = self.player_down
-                    case "right":
-                        texture = self.player_right
-                    case "left":
-                        texture = self.player_left
-                    case "stay":
-                        texture = self.player_stay
-            else:
-                match direction:
-                    case "up":
-                        texture = self.enemy_up
-                    case "down":
-                        texture = self.enemy_down
-                    case "right":
-                        texture = self.enemy_right
-                    case "left":
-                        texture = self.enemy_left
-                    case "stay":
-                        texture = self.enemy_stay
-            # Crear sprite del jugador
-            sprite = arcade.Sprite()
-            sprite.texture = texture
-            sprite.center_x = x
-            sprite.center_y = y
-            sprite.angle = 0
-            sprite.scale = 1
+                # Seleccionar textura
+                texture = self.player_stay
+                if pid == local_player_id:
+                    match direction:
+                        case "up":
+                            texture = self.player_up
+                        case "down":
+                            texture = self.player_down
+                        case "right":
+                            texture = self.player_right
+                        case "left":
+                            texture = self.player_left
+                        case "stay":
+                            texture = self.player_stay
+                else:
+                    match direction:
+                        case "up":
+                            texture = self.enemy_up
+                        case "down":
+                            texture = self.enemy_down
+                        case "right":
+                            texture = self.enemy_right
+                        case "left":
+                            texture = self.enemy_left
+                        case "stay":
+                            texture = self.enemy_stay
+                # Crear sprite del jugador
+                sprite = arcade.Sprite()
+                sprite.texture = texture
+                sprite.center_x = x
+                sprite.center_y = y
+                sprite.angle = 0
+                sprite.scale = 1
 
-            # Agregar a la lista
-            self.player_list.append(sprite)
+                # Agregar a la lista
+                self.player_list.append(sprite)
 
             # === BARRA DE VIDA ===
             bar_width = 4
