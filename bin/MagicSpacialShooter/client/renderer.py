@@ -322,17 +322,10 @@ class Renderer:
         self.spells_list.draw()
 
     def draw_ui(self, players, local_player_id):
-        """
-        Dibuja elementos de la UI (stats, timer, etc)
-        
-        Args:
-            players: jugadores
-            local_player_id: ID del jugador local
-        """
-        # Título del juego
+  
         self.stats_title = arcade.Text(
             "YOUR STATS",
-            0, 0,   # luego ajustamos la posición al dibujar
+            0, 0,   
             TEXT_COLOR, 16,
             bold=True
         )
