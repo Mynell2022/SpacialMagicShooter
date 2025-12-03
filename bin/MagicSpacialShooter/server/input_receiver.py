@@ -17,7 +17,7 @@ class InputReceiver:
     def start(self):
 
         try:
-            self.socket.bind(f"tcp://*:{self.port}")
+            self.socket.bind(f"tcp://0.0.0.0:{self.port}")
             self.running = True
             self.thread = threading.Thread(target=self._listen_loop, daemon=True)
             self.thread.start()
