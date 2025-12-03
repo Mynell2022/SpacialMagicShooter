@@ -46,6 +46,12 @@ class InputReceiver:
             self.loop.close()
     
     async def _process_request(self, path, request_headers):
+        if "Upgrade" not in request_headers.headers:
+            return (
+                200,
+                [("Content-Type", "text/plain")],
+                b"OK"
+            )
         return None
 
 
