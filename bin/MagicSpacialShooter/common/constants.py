@@ -9,8 +9,8 @@ En este archivo definimos:
 """
 
 # Dimensiones lógicas del mapa (coherentes con la ventana del cliente)
-MAP_WIDTH = 800
-MAP_HEIGHT = 600
+MAP_WIDTH = 1010
+MAP_HEIGHT = 620
 
 # Tamaño aproximado del sprite del robot (para colisiones / centrado)
 PLAYER_WIDTH = 48

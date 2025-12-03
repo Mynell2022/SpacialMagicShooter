@@ -10,6 +10,7 @@ from common import constants
 import math
 import time
 from typing import Dict, List, Optional
+import random
 
 
 class WizardPlayer:
@@ -29,6 +30,7 @@ class WizardPlayer:
         self.speed: float = template["speed"]
         self.color_tag: str = template["color"]  # etiqueta para el cliente si quiere usarla
         self.damage: str = template["damage"]
+        self.score: int = 0
 
         # Posición y orientación
         self.x: float = start_x
@@ -77,6 +79,7 @@ class WizardPlayer:
             "color_tag": self.color_tag,
             "position": self.position,  # usado por renderer
             "damage": self.damage,
+            "score": self.score,
         }
 
     def __repr__(self) -> str:
@@ -129,8 +132,8 @@ class PlayerManager:
                 # Cooldown terminado, puede reaparecer
                 del self.respawn_cooldowns[player_id]
                 
-        start_x = constants.MAP_WIDTH / 2
-        start_y = constants.MAP_HEIGHT / 2
+        start_x = random.randint(265, constants.MAP_WIDTH)
+        start_y = random.randint(95, constants.MAP_HEIGHT)
         robot_type = self._pick_next_robot_type()
 
         player = WizardPlayer(player_id, robot_type, start_x, start_y)
@@ -269,3 +272,4 @@ def update_player_state(player: WizardPlayer, inputs: dict, delta_time: float) -
     """Punto de entrada para el GameLoop del servidor."""
     update_player_movement(player, inputs, delta_time)
     update_player_rotation(player, inputs)
+

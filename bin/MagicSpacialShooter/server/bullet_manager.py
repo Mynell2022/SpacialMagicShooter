@@ -68,6 +68,7 @@ class BulletManager:
 
                 if dist_sq <= collision_dist * collision_dist:
                     player.hp -= playerma.get_player(bullet.owner_id).damage
+                    if player.hp <= 0: playerma.get_player(bullet.owner_id).score += 1
                     bullets_to_remove.add(bullet)
                     break
 

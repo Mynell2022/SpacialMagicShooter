@@ -10,6 +10,7 @@ from local_state_store import LocalStateStore
 from input_capturer import InputCapturer
 from net_thread import NetIOThread
 from client_game_loop import ClientGameLoop
+from typing import Literal
 
 class GameWindow(arcade.Window):
     """Ventana principal del juego"""
@@ -89,6 +90,10 @@ class GameWindow(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """Captura clic del mouse para disparar"""
         self.input_capturer.on_mouse_press(x, y, button, modifiers)
+        if x-60 < 140 < x+60 and y-60 <670 < y+60:
+            self.renderer.showScoreboard()
+        if x-60 < 870 < x+60 and y-60 <130 < y+60:
+            self.renderer.closeScoreboard()
     
     def on_mouse_release(self, x, y, button, modifiers):
         """Captura soltar botón del mouse"""

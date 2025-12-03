@@ -168,8 +168,7 @@ class GameServer:
             "type": "state",
             "players": players_dict, 
             "bullets": [b.to_dict() for b in self.bullet_manager.get_all_bullets()],
-            "powerups": [],          
-            "scores": {},          
+            "powerups": [],         
             "game_time": 0,          
         }
 

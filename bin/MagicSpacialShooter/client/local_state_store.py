@@ -17,7 +17,6 @@ class LocalStateStore:
             'players': {},
             'bullets': [],
             'powerups': [],
-            'scores': {},
             'game_time': 0
         }
         self.state_history = []  # Historial de estados recientes
@@ -110,7 +109,6 @@ class LocalStateStore:
                 'players': {},
                 'bullets': [],
                 'powerups': [],
-                'scores': {},
                 'game_time': 0
             }
             self.state_history.clear()
