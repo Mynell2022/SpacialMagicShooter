@@ -67,8 +67,8 @@ class BulletManager:
                     danio = playerma.get_player(bullet.owner_id)
                     if danio:
                         player.hp -= danio.damage
+                        if player.hp <= 0: playerma.get_player(bullet.owner_id).score += 1
                     else: player.hp -= 10
-                    if player.hp <= 0: playerma.get_player(bullet.owner_id).score += 1
                     bullets_to_remove.add(bullet)
                     break
 
