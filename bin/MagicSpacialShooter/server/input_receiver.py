@@ -35,7 +35,8 @@ class InputReceiver:
             self.server = await websockets.serve(
                 self._ws_handler,
                 host="0.0.0.0",
-                port=self.port
+                port=self.port,
+                process_request=self._process_request
             )
             self.running = True
             await self.server.wait_closed()
@@ -43,6 +44,10 @@ class InputReceiver:
             self.loop.run_until_complete(start())
         finally:
             self.loop.close()
+    
+    async def _process_request(self, path, request_headers):
+        return None
+
 
     async def _ws_handler(self, websocket):
         print("[InputReceiver] Cliente conectado")

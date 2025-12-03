@@ -39,7 +39,8 @@ class StateBroadcaster:
             self.server = await websockets.serve(
                 self._ws_handler,
                 host="0.0.0.0",
-                port=self.port
+                port=self.port,
+                process_request=self._process_request
             )
 
             self.running = True
@@ -70,6 +71,10 @@ class StateBroadcaster:
             self.broadcast_async(state_dict),
             self.loop
         )
+    
+    async def _process_request(self, path, request_headers):
+        return None
+
 
     def start(self):
         import threading
