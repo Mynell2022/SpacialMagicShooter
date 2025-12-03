@@ -361,14 +361,15 @@ class Renderer:
                 align= "center"
             ).draw()
             y-=50
-        arcade.Text(
-            f"{nowPlayer['score']}           {nowPlayer['id']}",
-            480, 260,
-            (41, 20, 68),
-            25,
-            bold=True,
-            align= "left"
-        ).draw()
+        if(nowPlayer):
+            arcade.Text(
+                f"{nowPlayer.get('score',0)}           {nowPlayer.get('id',0)}",
+                480, 260,
+                (41, 20, 68),
+                25,
+                bold=True,
+                align= "left"
+            ).draw()
 
     def closeScoreboard(self):
         self.board.clear()

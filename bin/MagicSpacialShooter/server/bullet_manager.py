@@ -67,7 +67,10 @@ class BulletManager:
                 collision_dist = constants.PLAYER_RADIUS + constants.BULLET_RADIUS
 
                 if dist_sq <= collision_dist * collision_dist:
-                    player.hp -= playerma.get_player(bullet.owner_id).damage
+                    danio = playerma.get_player(bullet.owner_id)
+                    if danio:
+                        player.hp -= danio.damage
+                    else: player.hp -= 10
                     if player.hp <= 0: playerma.get_player(bullet.owner_id).score += 1
                     bullets_to_remove.add(bullet)
                     break

@@ -126,7 +126,6 @@ class PlayerManager:
             if time_since_death < self.respawn_delay:
                 # Todavía en cooldown
                 remaining = self.respawn_delay - time_since_death
-                print(f"⏳ [PlayerManager] Jugador {player_id} en cooldown de respawn ({remaining:.1f}s restantes)")
                 return None
             else:
                 # Cooldown terminado, puede reaparecer
