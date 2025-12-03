@@ -23,7 +23,6 @@ class GameServer:
 
     def start(self):
      
-        print("[GameServer] Iniciando servidor...")
         
         self.input_receiver.start()
         self.broadcaster.start()
@@ -33,7 +32,6 @@ class GameServer:
 
     def _main_loop(self):
   
-        print(f"[GameServer] Bucle iniciado a {self.target_fps} Hz")
         
         last_time = time.perf_counter()
 
@@ -71,7 +69,6 @@ class GameServer:
 
             player = self.player_manager.get_player(player_id)
             if not player:
-                print(f"[GameServer] Nuevo jugador detectado: {player_id}")
                 player = self.player_manager.create_player(player_id)
                 
                 if not player:
@@ -136,4 +133,3 @@ class GameServer:
         self.running = False
         self.input_receiver.stop()
         self.broadcaster.stop()
-        print("[GameServer] Servidor detenido.")
