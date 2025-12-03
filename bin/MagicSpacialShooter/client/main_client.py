@@ -1,7 +1,5 @@
 # client/main_client.py
-"""
-Cliente principal - por el momento solo setup del mapa y renderizado
-"""
+
 import arcade
 import uuid
 from config import *
@@ -13,31 +11,24 @@ from client_game_loop import ClientGameLoop
 from typing import Literal
 
 class GameWindow(arcade.Window):
-    """Ventana principal del juego"""
     
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         
-        # ID del jugador
         self.player_id = str(uuid.uuid4())[:8]
         
-        # === Renderer y Game Loop ===
         self.renderer = Renderer()
-        self.game_loop = ClientGameLoop(None, self.player_id)  # state_store se pasa después
+        self.game_loop = ClientGameLoop(None, self.player_id)  
         
-        # === placeholder mínimo ===
         self.state_store = LocalStateStore()
         self.input_capturer = InputCapturer(self.player_id)
         self.net_thread = None
         
-        # Actualizar referencia en game_loop
         self.game_loop.state_store = self.state_store
         
         print(f"Cliente iniciado - Player ID: {self.player_id}")
     
     def setup(self):
-        """Configuración inicial del juego"""
-        # Thread de red (parte de otros, pero necesario para no romper)
         self.net_thread = NetIOThread(
             self.player_id,
             self.input_capturer,
@@ -49,46 +40,34 @@ class GameWindow(arcade.Window):
         print("Mapa y objetos listos para recibir datos")
     
     def on_draw(self):
-        """Dibuja el mapa, objetos y jugadores reales del servidor"""
         self.clear()
         
-        # Estado que viene del servidor vía NetIOThread
         game_state = self.state_store.get_state()
         
-        # Fondo y mapa
         self.renderer.draw_background()
-        # self.renderer.draw_map_borders()  # opcional
         
-        # Objetos del juego
         self.renderer.draw_powerups(game_state.get('powerups', []))
         self.renderer.draw_bullets(game_state.get('bullets', []))
         self.renderer.draw_players(game_state.get('players', {}), self.player_id)
         
-        # UI
         self.renderer.draw_ui(game_state, self.player_id)
 
 
     
     def on_update(self, delta_time):
-        """
-        === Verificación de límites del mapa ===
-        """
+  
         self.game_loop.update(delta_time)
     
     def on_key_press(self, key, modifiers):
-        """Input (parte de otros)"""
         self.input_capturer.on_key_press(key, modifiers)
     
     def on_key_release(self, key, modifiers):
-        """Input (parte de otros)"""
         self.input_capturer.on_key_release(key, modifiers)
     
     def on_mouse_motion(self, x, y, dx, dy):
-        """Captura movimiento del mouse para apuntar"""
         self.input_capturer.on_mouse_motion(x, y, dx, dy)
     
     def on_mouse_press(self, x, y, button, modifiers):
-        """Captura clic del mouse para disparar"""
         self.input_capturer.on_mouse_press(x, y, button, modifiers)
         if x-60 < 140 < x+60 and y-60 <670 < y+60:
             self.renderer.showScoreboard()
@@ -96,19 +75,15 @@ class GameWindow(arcade.Window):
             self.renderer.closeScoreboard()
     
     def on_mouse_release(self, x, y, button, modifiers):
-        """Captura soltar botón del mouse"""
         self.input_capturer.on_mouse_release(x, y, button, modifiers)
     
     def on_close(self):
-        """Limpieza al cerrar"""
         if self.net_thread:
             self.net_thread.stop()
-            #self.net_thread.join(1000)
         print("Cliente cerrado")
         self.close()
 
 def main():
-    """Punto de entrada del cliente"""
     window = GameWindow()
     window.setup()
     arcade.run()
