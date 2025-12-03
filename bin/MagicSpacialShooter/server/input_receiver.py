@@ -1,59 +1,76 @@
-import zmq
+# server/input_receiver.py
+
+import asyncio
 import threading
 import queue
+import websockets
 import json
 
+
 class InputReceiver:
- 
 
     def __init__(self, port=5555):
         self.port = port
-        self.context = zmq.Context()
-        self.socket = self.context.socket(zmq.PULL)
-        self.running = False
         self.input_queue = queue.Queue()
-        self.thread = None
-
-    def start(self):
-
-        try:
-            self.socket.bind(f"tcp://0.0.0.0:{self.port}")
-            self.running = True
-            self.thread = threading.Thread(target=self._listen_loop, daemon=True)
-            self.thread.start()
-            print(f"[InputReceiver] Escuchando inputs en el puerto {self.port}...")
-        except Exception as e:
-            print(f"[InputReceiver] Error al iniciar: {e}")
-
-    def _listen_loop(self):
-     
-        while self.running:
-            try:
-      
-                message = self.socket.recv_json()
-                self.input_queue.put(message)
-            except zmq.ZMQError as e:
-                if self.running:
-                    print(f"[InputReceiver] Error de ZMQ: {e}")
-            except Exception as e:
-                print(f"[InputReceiver] Error inesperado: {e}")
-
-    def get_pending_inputs(self):
-  
-        inputs = []
-        while not self.input_queue.empty():
-            try:
-                inputs.append(self.input_queue.get_nowait())
-            except queue.Empty:
-                break
-        return inputs
-
-    def stop(self):
-
         self.running = False
- 
+        self.thread = None
+        self.loop = None
+
+    # ---------------------------------------------
+    # Start thread
+    # ---------------------------------------------
+    def start(self):
+        self.thread = threading.Thread(target=self._run_async_loop, daemon=True)
+        self.thread.start()
+
+    # ---------------------------------------------
+    # Async loop inside thread
+    # ---------------------------------------------
+    def _run_async_loop(self):
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+
+        async def start():
+            print(f"[InputReceiver] WebSocket en puerto {self.port}")
+            self.server = await websockets.serve(
+                self._ws_handler,
+                host="0.0.0.0",
+                port=self.port
+            )
+            self.running = True
+            await self.server.wait_closed()
         try:
-            self.socket.close()
-            self.context.term()
-        except Exception:
-            pass
+            self.loop.run_until_complete(start())
+        finally:
+            self.loop.close()
+
+    async def _ws_handler(self, websocket):
+        print("[InputReceiver] Cliente conectado")
+
+        try:
+            async for message in websocket:
+                self.handle_message(message)
+        except Exception as e:
+            print("[InputReceiver] Error en cliente:", e)
+        finally:
+            print("[InputReceiver] Cliente desconectado")
+
+    def handle_message(self, raw_message):
+        try:
+            data = json.loads(raw_message)
+            self.input_queue.put(data)
+        except Exception as e:
+            print("[InputReceiver] Error procesando mensaje:", e)
+
+    # ---------------------------------------------
+    def get_pending_inputs(self):
+        items = []
+        while not self.input_queue.empty():
+            items.append(self.input_queue.get())
+        return items
+
+    # ---------------------------------------------
+    def stop(self):
+        self.running = False
+        if self.loop:
+            self.loop.call_soon_threadsafe(self.loop.stop)

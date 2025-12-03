@@ -1,98 +1,99 @@
 # client/net_thread.py
 
-
 import threading
 import time
-import zmq
+import json
+import asyncio
+import websockets
 import config
 
+
 class NetIOThread(threading.Thread):
- 
-    
+
     def __init__(self, player_id, input_capturer, state_store):
         super().__init__(daemon=True)
         self.player_id = player_id
         self.input_capturer = input_capturer
         self.state_store = state_store
+
         self.running = False
-        
-        self.context = zmq.Context()
-        
-        self.push_socket = self.context.socket(zmq.PUSH)
-        
-        self.sub_socket = self.context.socket(zmq.SUB)
-        self.sub_socket.setsockopt_string(zmq.SUBSCRIBE, "")  
-        
-        self.input_send_rate = 1.0 / 60.0  
-        self.last_input_send = 0
-        
+
+        # URLs de los servidores WebSocket
+        self.input_url = f"ws://{config.SERVER_IP}:{config.SERVER_INPUT_PORT}"
+        self.state_url = f"ws://{config.SERVER_IP}:{config.SERVER_STATE_PORT}"
+
+        self.loop = None
+
+    # =======================================
+    #               RUN
+    # =======================================
     def run(self):
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+
+        self.loop.run_until_complete(self.main_loop())
+
+    # =======================================
+    #            MAIN ASYNC LOOP
+    # =======================================
+    async def main_loop(self):
+
+        print(f"[NetIOThread] Conectando a websockets...")
 
         try:
-            server_address = config.SERVER_IP
-            input_port = config.SERVER_INPUT_PORT
-            state_port = config.SERVER_STATE_PORT
-            
-            self.push_socket.connect(f"tcp://{server_address}:{input_port}")
-            self.sub_socket.connect(f"tcp://{server_address}:{state_port}")
-            
-            print(f"[NetIOThread] Conectado al servidor {server_address}")
-            print(f"Enviando inputs a puerto {input_port}")
-            print(f"Recibiendo estado desde puerto {state_port}")
-            
-            self.running = True
-            
-            poller = zmq.Poller()
-            poller.register(self.sub_socket, zmq.POLLIN)
-            
-            while self.running:
-                current_time = time.time()
-                if current_time - self.last_input_send >= self.input_send_rate:
-                    self._send_input()
-                    self.last_input_send = current_time
-                
-                socks = dict(poller.poll(timeout=10))  
-                
-                if self.sub_socket in socks and socks[self.sub_socket] == zmq.POLLIN:
-                    self._receive_state()
-                
-                time.sleep(0.001)
-                
-        except Exception as e:
-            print(f"[NetIOThread] Error en bucle de red: {e}")
-        finally:
-            self._cleanup()
-    
-    def _send_input(self):
+            async with websockets.connect(self.input_url) as input_ws, \
+                       websockets.connect(self.state_url) as state_ws:
 
-        try:
-            input_message = self.input_capturer.get_input_message()
-            self.push_socket.send_json(input_message)
+                print("[NetIOThread] Conectado a INPUT y STATE websockets")
+
+                self.running = True
+
+                # Lanzar la tarea que escucha estados
+                state_task = asyncio.create_task(self.state_receiver(state_ws))
+
+                while self.running:
+                    await self.send_input(input_ws)
+                    await asyncio.sleep(1/60)
+
+                state_task.cancel()
+
         except Exception as e:
-            print(f"[NetIOThread] Error enviando input: {e}")
-    
-    def _receive_state(self):
-   
+            print(f"[NetIOThread] ERROR EN CONEXIÓN WEBSOCKET: {e}")
+
+    # =======================================
+    #         ENVÍO DE INPUT
+    # =======================================
+    async def send_input(self, input_ws):
         try:
-            state_data = self.sub_socket.recv_json(flags=zmq.NOBLOCK)
-            
-            self.state_store.update_state(state_data)
-            
-        except zmq.Again:
-            pass
+            message = self.input_capturer.get_input_message()
+
+            # Asegurar que es JSON válido
+            await input_ws.send(json.dumps(message))
+
         except Exception as e:
-            print(f"[NetIOThread] Error recibiendo estado: {e}")
-    
-    def _cleanup(self):
- 
-        try:
-            self.push_socket.close()
-            self.sub_socket.close()
-            self.context.term()
-            print("[NetIOThread] Conexión cerrada limpiamente")
-        except Exception as e:
-            print(f"[NetIOThread] Error en cleanup: {e}")
-    
+            print(f"[NetIOThread] Error enviando INPUT → {e}")
+
+    # =======================================
+    #       RECEPCIÓN DE ESTADO
+    # =======================================
+    async def state_receiver(self, state_ws):
+
+        while self.running:
+            try:
+                raw_msg = await state_ws.recv()
+                state_data = json.loads(raw_msg)
+
+                self.state_store.update_state(state_data)
+
+            except websockets.ConnectionClosed as e:
+                print(f"[NetIOThread] STATE cerrado: {e.code} {e.reason}")
+                break
+            except Exception as e:
+                print(f"[NetIOThread] Error recibiendo STATE: {e}")
+
+    # =======================================
+    #       DETENER HILO
+    # =======================================
     def stop(self):
         self.running = False
-        print("[NetIOThread] Deteniendo hilo de red...")
+        print("[NetIOThread] Detenido.")
