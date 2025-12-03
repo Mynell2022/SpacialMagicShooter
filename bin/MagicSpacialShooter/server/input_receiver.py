@@ -4,10 +4,7 @@ import queue
 import json
 
 class InputReceiver:
-    """
-    Módulo encargado de recibir los inputs de los clientes a través de ZeroMQ (PULL).
-    Se ejecuta en un hilo separado para no bloquear el Game Loop principal.
-    """
+ 
 
     def __init__(self, port=5555):
         self.port = port
@@ -18,9 +15,7 @@ class InputReceiver:
         self.thread = None
 
     def start(self):
-        """
-        Inicia el socket y el hilo de escucha.
-        """
+
         try:
             self.socket.bind(f"tcp://*:{self.port}")
             self.running = True
@@ -31,13 +26,10 @@ class InputReceiver:
             print(f"[InputReceiver] Error al iniciar: {e}")
 
     def _listen_loop(self):
-        """
-        Bucle interno del hilo que espera mensajes y los encola.
-        """
+     
         while self.running:
             try:
-                # recv_json bloquea hasta que llega un mensaje
-                # Esto está bien porque estamos en un hilo dedicado
+      
                 message = self.socket.recv_json()
                 self.input_queue.put(message)
             except zmq.ZMQError as e:
@@ -47,10 +39,7 @@ class InputReceiver:
                 print(f"[InputReceiver] Error inesperado: {e}")
 
     def get_pending_inputs(self):
-        """
-        Devuelve una lista con todos los inputs acumulados desde la última llamada.
-        El Game Loop debe llamar a esto al inicio de cada tick.
-        """
+  
         inputs = []
         while not self.input_queue.empty():
             try:
@@ -60,12 +49,9 @@ class InputReceiver:
         return inputs
 
     def stop(self):
-        """
-        Detiene el hilo y cierra el socket limpiamente.
-        """
+
         self.running = False
-        # Para desbloquear el recv(), podríamos enviar un mensaje dummy o cerrar el contexto,
-        # pero por simplicidad en prototipo, cerramos el socket.
+ 
         try:
             self.socket.close()
             self.context.term()

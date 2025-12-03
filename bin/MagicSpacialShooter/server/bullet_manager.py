@@ -10,7 +10,6 @@ class Bullet:
         self.angle = -angle_deg
         self.lifetime = constants.BULLET_LIFETIME
         
-        # Calcular velocidad basada en el ángulo
         angle_rad = math.radians(angle_deg)
         self.vx = math.cos(angle_rad) * constants.BULLET_SPEED
         self.vy = math.sin(angle_rad) * constants.BULLET_SPEED
@@ -42,11 +41,9 @@ class BulletManager:
         return bullet
 
     def update(self, delta_time):
-        # Actualizar posición y vida
         for bullet in self.bullets:
             bullet.update(delta_time)
         
-        # Eliminar balas muertas o fuera del área de juego
         self.bullets = [
             b for b in self.bullets 
             if b.lifetime > 0 
@@ -59,7 +56,7 @@ class BulletManager:
         for bullet in self.bullets:
             for player in players:
                 if bullet.owner_id == player.id:
-                    continue  # no dañarse a sí mismo
+                    continue  
                 dx = bullet.x - player.x
                 dy = bullet.y - player.y
                 dist_sq = dx*dx + dy*dy
