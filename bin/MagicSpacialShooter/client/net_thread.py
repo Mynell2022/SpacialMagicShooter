@@ -33,8 +33,8 @@ class NetIOThread(threading.Thread):
             input_port = config.SERVER_INPUT_PORT
             state_port = config.SERVER_STATE_PORT
             
-            self.push_socket.connect(f"tcp://{server_address}:{input_port}")
-            self.sub_socket.connect(f"tcp://{server_address}:{state_port}")
+            self.push_socket.connect(config.NGROK555)
+            self.sub_socket.connect(config.NGROK556)
             
             print(f"[NetIOThread] Conectado al servidor {server_address}")
             print(f"Enviando inputs a puerto {input_port}")
