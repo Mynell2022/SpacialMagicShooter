@@ -12,6 +12,7 @@ class GameServer:
     - Recepción de inputs (InputReceiver)
     - Lógica de juego y actualización de entidades (PlayerManager)
     - Difusión de estado (StateBroadcaster)
+    - NUEVO: Limpieza de jugadores muertos y desconectados
     """
 
     def __init__(self):
@@ -27,6 +28,10 @@ class GameServer:
         self.target_fps = 60
         self.tick_rate = 1.0 / self.target_fps
         self.running = False
+        
+        # ✅ NUEVO: Control de limpieza periódica
+        self.last_cleanup_time = time.time()
+        self.cleanup_interval = 1.0  # verificar desconexiones cada 1 segundo
 
     def start(self):
         """
@@ -62,7 +67,13 @@ class GameServer:
             self.bullet_manager.handle_collisions(self.player_manager)
             self.bullet_manager.update(delta_time)
 
-            # 3. Difundir Estado
+            # 3. NUEVO: Limpiar jugadores muertos
+            self._cleanup_dead_players()
+
+            # 4. NUEVO: Limpiar jugadores desconectados (periódicamente)
+            self._cleanup_disconnected_players()
+
+            # 5. Difundir Estado
             self._broadcast_state()
 
             # Control de Frame Rate (Sleep para no quemar CPU)
@@ -90,6 +101,13 @@ class GameServer:
             if not player:
                 print(f"[GameServer] Nuevo jugador detectado: {player_id}")
                 player = self.player_manager.create_player(player_id)
+                
+                #  Si está en cooldown, ignorar inputs
+                if not player:
+                    continue  # Jugador en cooldown de respawn, ignorar
+
+            # Actualizar timestamp de actividad
+            self.player_manager.update_player_activity(player_id)
 
             # Actualizar estado del jugador basado en inputs
             update_player_state(player, input_cmds, delta_time)
@@ -117,6 +135,26 @@ class GameServer:
                             angle
                         )
 
+    # Limpiar jugadores sin vida
+    def _cleanup_dead_players(self):
+        """
+        Elimina jugadores que tienen hp <= 0
+        """
+        dead_players = self.player_manager.remove_dead_players()
+        
+    # Limpiar jugadores desconectados
+    def _cleanup_disconnected_players(self):
+        """
+        Verifica periódicamente si hay jugadores sin actividad reciente
+        """
+        current_time = time.time()
+        
+        # Solo verificar cada X segundos (no en cada tick)
+        if current_time - self.last_cleanup_time >= self.cleanup_interval:
+            self.last_cleanup_time = current_time
+            
+            disconnected_players = self.player_manager.remove_disconnected_players()
+            
     def _broadcast_state(self):
         """
         Construye el snapshot del mundo y lo envía a todos los clientes.
