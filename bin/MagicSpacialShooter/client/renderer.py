@@ -88,29 +88,19 @@ class Renderer:
     
     def draw_powerups(self, powerups):
  
-        for powerup in powerups:
-            screen_x = MAP_X_OFFSET + powerup['x']
-            screen_y = MAP_Y_OFFSET + powerup['y']
-            
-            color = self.powerup_colors.get(powerup['type'], arcade.color.WHITE)
-            
-            arcade.draw_polygon_filled([
-                (screen_x, screen_y + POWERUP_SIZE),
-                (screen_x + POWERUP_SIZE * 0.866, screen_y + POWERUP_SIZE * 0.5),
-                (screen_x + POWERUP_SIZE * 0.866, screen_y - POWERUP_SIZE * 0.5),
-                (screen_x, screen_y - POWERUP_SIZE),
-                (screen_x - POWERUP_SIZE * 0.866, screen_y - POWERUP_SIZE * 0.5),
-                (screen_x - POWERUP_SIZE * 0.866, screen_y + POWERUP_SIZE * 0.5),
-            ], color)
-            
-            arcade.draw_polygon_outline([
-                (screen_x, screen_y + POWERUP_SIZE),
-                (screen_x + POWERUP_SIZE * 0.866, screen_y + POWERUP_SIZE * 0.5),
-                (screen_x + POWERUP_SIZE * 0.866, screen_y - POWERUP_SIZE * 0.5),
-                (screen_x, screen_y - POWERUP_SIZE),
-                (screen_x - POWERUP_SIZE * 0.866, screen_y - POWERUP_SIZE * 0.5),
-                (screen_x - POWERUP_SIZE * 0.866, screen_y + POWERUP_SIZE * 0.5),
-            ], arcade.color.WHITE, 2)
+        for x, y in powerups:
+            bar_width = 5
+            bar_height = 5
+
+            left = x - (bar_height / 2)
+            right = x + (bar_height / 2)
+            bottom = y - (bar_width / 2)
+            top = y + (bar_width / 2)
+            arcade.draw_lrbt_rectangle_filled(
+                left, right,
+                bottom, top,
+                (220,178,92)
+            )
     
 
     def draw_players(self, players, local_player_id):

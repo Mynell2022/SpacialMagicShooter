@@ -1,5 +1,7 @@
 import time
 import math
+import random
+from common import constants
 from server.input_receiver import InputReceiver
 from server.broadcaster import StateBroadcaster
 from server.player_manager import PlayerManager, update_player_state
@@ -20,6 +22,7 @@ class GameServer:
         
         self.last_cleanup_time = time.time()
         self.cleanup_interval = 1.0  
+        self.powerups = []
 
     def start(self):
      
@@ -40,6 +43,12 @@ class GameServer:
             delta_time = current_time - last_time
             last_time = current_time
 
+            for _ in range(len(self.powerups),15):
+                x = random.randint(265, constants.MAP_WIDTH)
+                y = random.randint(95, constants.MAP_HEIGHT)
+                self.powerups.append((x, y))
+            self.handle_powerups_collisions(self.player_manager)
+
             self._process_inputs(delta_time)
 
             self.bullet_manager.handle_collisions(self.player_manager)
@@ -55,6 +64,19 @@ class GameServer:
             sleep_time = self.tick_rate - elapsed
             if sleep_time > 0:
                 time.sleep(sleep_time)
+
+    def handle_powerups_collisions(self, playerma):
+        players = playerma.get_all_players()
+        for x, y in self.powerups:
+            for player in players:
+                dx = x - player.x
+                dy = y - player.y
+                dist_sq = dx*dx + dy*dy
+                collision_dist = constants.PLAYER_RADIUS + 10
+                if dist_sq <= collision_dist * collision_dist:
+                    self.powerups.remove((x,y))
+                    player.hp += 10
+                    break
 
     def _process_inputs(self, delta_time):
 
@@ -121,7 +143,7 @@ class GameServer:
             "type": "state",
             "players": players_dict, 
             "bullets": [b.to_dict() for b in self.bullet_manager.get_all_bullets()],
-            "powerups": [],         
+            "powerups": self.powerups,         
             "game_time": 0,          
         }
 
