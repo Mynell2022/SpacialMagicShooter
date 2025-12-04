@@ -7,6 +7,7 @@ import asyncio
 import websockets
 import config
 
+import json
 
 class NetIOThread(threading.Thread):
 
@@ -94,6 +95,37 @@ class NetIOThread(threading.Thread):
     # =======================================
     #       DETENER HILO
     # =======================================
+            print(f"[NetIOThread] Error enviando input: {e}")
+    
+    def _receive_state(self):
+        try:
+            raw = self.sub_socket.recv_string(zmq.NOBLOCK)
+        except zmq.Again:
+            return  # No hay mensaje real
+
+        if not raw or raw.strip() == "":
+            print("[NetIOThread] Mensaje vacío recibido")
+            return
+
+        try:
+            data = json.loads(raw)
+            self.state_store.update_state(data)
+        except json.JSONDecodeError:
+            print("[NetIOThread] JSON inválido:", raw)
+            return
+    
+    def _cleanup(self):
+ 
+        try:
+            self.push_socket.close()
+            self.sub_socket.close()
+            self.context.term()
+            print("[NetIOThread] Conexión cerrada limpiamente")
+        except Exception as e:
+            print(f"[NetIOThread] Error en cleanup: {e}")
+    
     def stop(self):
         self.running = False
         print("[NetIOThread] Detenido.")
+        self._cleanup()
+        print("[NetIOThread] Deteniendo hilo de red...")
