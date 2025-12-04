@@ -23,8 +23,6 @@ SERVER_IP = "localhost"
 SERVER_INPUT_PORT = 5555
 SERVER_STATE_PORT = 5556
 
-NGROK555 = "tcp://2.tcp.ngrok.io:17692"
-NGROK556 = "tcp://0.tcp.ngrok.io:17102"
 
 FPS = 60
 TICK_RATE = 1/60
