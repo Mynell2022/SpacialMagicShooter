@@ -79,6 +79,8 @@ class BulletManager:
 
             for j in range(i + 1, len(self.bullets)):
                 b2 = self.bullets[j]
+                if b1.owner_id == b2.owner_id:
+                    continue
                 if b2 in bullets_to_remove:
                     continue
 

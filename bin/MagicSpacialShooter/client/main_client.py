@@ -25,7 +25,6 @@ class GameWindow(arcade.Window):
         self.net_thread = None
         
         self.game_loop.state_store = self.state_store
-        
         print(f"Cliente iniciado - Player ID: {self.player_id}")
     
     def setup(self):

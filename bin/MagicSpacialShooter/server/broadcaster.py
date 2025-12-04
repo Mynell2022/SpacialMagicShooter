@@ -12,7 +12,7 @@ class StateBroadcaster:
     def start(self):
     
         try:
-            self.socket.bind(f"tcp://*:{self.port}")
+            self.socket.bind(f"tcp://localhost:{self.port}")
             print(f"[StateBroadcaster] Publicando estado en el puerto {self.port}...")
         except Exception as e:
             print(f"[StateBroadcaster] Error al iniciar: {e}")

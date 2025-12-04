@@ -5,6 +5,7 @@ import threading
 import time
 import zmq
 import config
+import json
 
 class NetIOThread(threading.Thread):
  
@@ -33,8 +34,8 @@ class NetIOThread(threading.Thread):
             input_port = config.SERVER_INPUT_PORT
             state_port = config.SERVER_STATE_PORT
             
-            self.push_socket.connect(config.NGROK555)
-            self.sub_socket.connect(config.NGROK556)
+            self.push_socket.connect(f"tcp://{server_address}:{input_port}") 
+            self.sub_socket.connect(f"tcp://{server_address}:{state_port}")
             
             print(f"[NetIOThread] Conectado al servidor {server_address}")
             print(f"Enviando inputs a puerto {input_port}")
@@ -74,14 +75,20 @@ class NetIOThread(threading.Thread):
     def _receive_state(self):
    
         try:
-            state_data = self.sub_socket.recv_json(flags=zmq.NOBLOCK)
-            
-            self.state_store.update_state(state_data)
-            
+            raw = self.sub_socket.recv_string(zmq.NOBLOCK)
         except zmq.Again:
-            pass
-        except Exception as e:
-            print(f"[NetIOThread] Error recibiendo estado: {e}")
+            return  # No hay mensaje real
+
+        if not raw or raw.strip() == "":
+            print("[NetIOThread] Mensaje vacío recibido")
+            return
+
+        try:
+            data = json.loads(raw)
+            self.state_store.update_state(data)
+        except json.JSONDecodeError:
+            print("[NetIOThread] JSON inválido:", raw)
+            return
     
     def _cleanup(self):
  

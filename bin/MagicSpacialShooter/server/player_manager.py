@@ -82,7 +82,7 @@ class PlayerManager:
         self.disconnect_timeout = 10.0  
         
         self.respawn_cooldowns: Dict[str, float] = {}  
-        self.respawn_delay = 10.0  
+        self.respawn_delay = constants.RESPAWN_DELAY 
 
     def _pick_next_robot_type(self) -> str:
         if not self._robot_type_cycle:

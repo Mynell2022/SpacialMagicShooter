@@ -43,7 +43,7 @@ class GameServer:
             delta_time = current_time - last_time
             last_time = current_time
 
-            for _ in range(len(self.powerups),15):
+            for _ in range(len(self.powerups),10):
                 x = random.randint(265, constants.MAP_WIDTH)
                 y = random.randint(95, constants.MAP_HEIGHT)
                 self.powerups.append((x, y))
@@ -75,7 +75,7 @@ class GameServer:
                 collision_dist = constants.PLAYER_RADIUS + 10
                 if dist_sq <= collision_dist * collision_dist:
                     self.powerups.remove((x,y))
-                    player.hp += 10
+                    player.hp += 5
                     break
 
     def _process_inputs(self, delta_time):
@@ -102,7 +102,7 @@ class GameServer:
 
             if input_cmds.get("shoot"):
                 now = time.time()
-                if now - player.last_shot_time >= 0.5:  
+                if now - player.last_shot_time >= constants.AIM_SPEED:  
                     player.last_shot_time = now
                     
                     aim_x = input_cmds.get("aim_x", player.x)
